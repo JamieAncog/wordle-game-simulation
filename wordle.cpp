@@ -14,9 +14,10 @@ using namespace std;
 
 
 // Add prototypes of helper functions here
-void findPossibilities(string floatsLeft, const string& in, int n, std::string& floating, vector<string> posb, std::set<std::string>& final, const std::set<std::string>& dict);
+
+void findPossibilities(int floatsLeft, const string& in, int n, std::string& floating, vector<string> posb, std::set<std::string>& final, const std::set<std::string>& dict);
 int spacesLeft(string inp, int curr);
-void nextLetter(string prefix, string floatsLeft, const string& in, int n, std::string& floating, vector<string> posb, std::set<std::string>& final, const std::set<std::string>& dict);
+void nextLetter(string prefix, int floatsLeft, const string& in, int n, std::string& floating, vector<string> posb, std::set<std::string>& final, const std::set<std::string>& dict);
 
 // Definition of primary wordle function
 std::set<std::string> wordle(
@@ -29,18 +30,13 @@ std::set<std::string> wordle(
     vector<string> posb;
     std::set<std::string> mySet;
     string floaters = floating;
-    string floats = "";
-    for (int i = 0; i < (int) in.length(); i++){
-        if (in.substr(i,1).compare("-") == 0){
-            floats += "-";
-        }
-    }
+    int floats = spacesLeft(in, 0);
     findPossibilities(floats, in, 0, floaters, posb, mySet, dict);
     return mySet;
 }
 
 // Define any helper functions 
-void findPossibilities(string floatsLeft, const string& in, int n, std::string& floating, vector<string> posb, std::set<std::string>& final, const std::set<std::string>& dict){
+void findPossibilities(int floatsLeft, const string& in, int n, std::string& floating, vector<string> posb, std::set<std::string>& final, const std::set<std::string>& dict){
     if (n == (int) in.length()) {
         for (int i = 0; i < (int) posb.size(); i++){
             std::set<std::string>::iterator it;
@@ -76,21 +72,31 @@ void findPossibilities(string floatsLeft, const string& in, int n, std::string& 
     }
 }
 
-void nextLetter(string prefix, string floatsLeft, const string& in, int n, std::string& floating, vector<string> posb, std::set<std::string>& final, const std::set<std::string>& dict){
+void nextLetter(string prefix, int floatsLeft, const string& in, int n, std::string& floating, vector<string> posb, std::set<std::string>& final, const std::set<std::string>& dict){
     string alph = "abcdefghijklmnopqrstuvwzyz";
     vector<string> nextPos;
     for (int i = 0; i < (int) floating.size(); i++){
         string nextStr = prefix + floating.substr(i,1);
         string newfloating = floating.substr(0,i) + floating.substr(i+1);
         nextPos.push_back(nextStr);
-        int len = floatsLeft.length();
-        findPossibilities(floatsLeft.substr(0,len-1),in, n+1, newfloating, nextPos, final, dict);
+        findPossibilities(floatsLeft-1,in, n+1, newfloating, nextPos, final, dict);
     }
-    if (floatsLeft.length() < in.length() - prefix.length() || floating.length() == 0){
+    if (floatsLeft < (int) (in.length() - prefix.length()) || floating.length() == 0){
         for (int j = 0; j < 26; j++){
             string nextStr = prefix + alph.substr(j,1);
             nextPos.push_back(nextStr);
         }
         findPossibilities(floatsLeft, in, n+1, floating, nextPos, final, dict);
     }
+}
+
+int spacesLeft(string inp, int curr){
+    if (curr >= (int) inp.length()){
+        return 0;
+    }
+    int count = 0;
+    if (inp.substr(curr,1).compare("-") == 0){
+        count = 1;
+    }
+    return count + spacesLeft(inp, curr+1);
 }
