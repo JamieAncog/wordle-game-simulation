@@ -87,7 +87,10 @@ void nextLetter(string prefix, int floatsLeft, const string& in, int n, std::str
         nextPos.push_back(nextStr);
         findPossibilities(floatsLeft-1,in, n+1, newfloating, nextPos, final, dict);
     }
-    if (floatsLeft < (int) (in.length() - prefix.length())|| floating.length() == 0){
+    if (floatsLeft == (int) in.length()){
+        return;
+    }
+    if (floatsLeft < (int) (in.length() - prefix.length()) || floating.length() == 0){
         vector<string> nextPos;
         for (int j = 0; j < 26; j++){
             string nextStr = prefix + alph.substr(j,1);
