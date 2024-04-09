@@ -16,7 +16,7 @@ using namespace std;
 // Add prototypes of helper functions here
 
 void findPossibilities(int floatsLeft, const string& in, int n, std::string& floating, vector<string> posb, std::set<std::string>& final, const std::set<std::string>& dict);
-int spacesLeft(string inp, int curr);
+int spacesLeft(string inp, int curr, string ch);
 void nextLetter(string prefix, int floatsLeft, const string& in, int n, std::string& floating, vector<string> posb, std::set<std::string>& final, const std::set<std::string>& dict);
 
 // Definition of primary wordle function
@@ -30,7 +30,7 @@ std::set<std::string> wordle(
     vector<string> posb;
     std::set<std::string> mySet;
     string floaters = floating;
-    int floats = spacesLeft(in, 0);
+    int floats = floating.length();
     findPossibilities(floats, in, 0, floaters, posb, mySet, dict);
     return mySet;
 }
@@ -87,7 +87,7 @@ void nextLetter(string prefix, int floatsLeft, const string& in, int n, std::str
         nextPos.push_back(nextStr);
         findPossibilities(floatsLeft-1,in, n+1, newfloating, nextPos, final, dict);
     }
-    if (floatsLeft <= (int) (in.length() - prefix.length()) || floating.length() == 0){
+    if (floatsLeft < (int) (in.length() - prefix.length())|| floating.length() == 0){
         vector<string> nextPos;
         for (int j = 0; j < 26; j++){
             string nextStr = prefix + alph.substr(j,1);
@@ -97,13 +97,13 @@ void nextLetter(string prefix, int floatsLeft, const string& in, int n, std::str
     }
 }
 
-int spacesLeft(string inp, int curr){
+int spacesLeft(string inp, int curr, string ch){
     if (curr >= (int) inp.length()){
         return 0;
     }
     int count = 0;
-    if (inp.substr(curr,1).compare("-") == 0){
+    if (inp.substr(curr,1).compare(ch) == 0){
         count = 1;
     }
-    return count + spacesLeft(inp, curr+1);
+    return count + spacesLeft(inp, curr+1, ch);
 }
