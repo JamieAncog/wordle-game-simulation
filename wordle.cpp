@@ -73,7 +73,7 @@ void findPossibilities(int floatsLeft, const string& in, int n, std::string& flo
 }
 
 void nextLetter(string prefix, int floatsLeft, const string& in, int n, std::string& floating, vector<string> posb, std::set<std::string>& final, const std::set<std::string>& dict){
-    string alph = "abcdefghijklmnopqrstuvwzyz";
+    string alph = "abcdefghijklmnopqrstuvwxyz";
     vector<string> nextPos;
     for (int i = 0; i < (int) floating.size(); i++){
         string nextStr = prefix + floating.substr(i,1);
