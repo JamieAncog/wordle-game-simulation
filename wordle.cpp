@@ -15,9 +15,9 @@ using namespace std;
 
 // Add prototypes of helper functions here
 
-void findPossibilities(int floatsLeft, const string& in, int n, std::string& floating, vector<string> posb, std::set<std::string>& final, const std::set<std::string>& dict);
+void findPossibilities(int blanks, int floatsLeft, const string& in, int n, std::string& floating, vector<string> posb, std::set<std::string>& final, const std::set<std::string>& dict);
 int spacesLeft(string inp, int curr, string ch);
-void nextLetter(string prefix, int floatsLeft, const string& in, int n, std::string& floating, vector<string> posb, std::set<std::string>& final, const std::set<std::string>& dict);
+void nextLetter(int blanks, string prefix, int floatsLeft, const string& in, int n, std::string& floating, vector<string> posb, std::set<std::string>& final, const std::set<std::string>& dict);
 
 // Definition of primary wordle function
 std::set<std::string> wordle(
@@ -31,14 +31,14 @@ std::set<std::string> wordle(
     std::set<std::string> mySet;
     string floaters = floating;
     int floats = floating.length();
-    findPossibilities(floats, in, 0, floaters, posb, mySet, dict);
+    int blanks = spacesLeft(in, 0, "-");
+    findPossibilities(blanks, floats, in, 0, floaters, posb, mySet, dict);
     return mySet;
 }
 
 // Define any helper functions 
-void findPossibilities(int floatsLeft, const string& in, int n, std::string& floating, vector<string> posb, std::set<std::string>& final, const std::set<std::string>& dict){
-    /*
-    for (int i = 0; i < (int) posb.size(); i++){
+void findPossibilities(int blanks, int floatsLeft, const string& in, int n, std::string& floating, vector<string> posb, std::set<std::string>& final, const std::set<std::string>& dict){
+    /*for (int i = 0; i < (int) posb.size(); i++){
         cout << posb[i] << " ";
     }
     cout << endl;
@@ -64,39 +64,38 @@ void findPossibilities(int floatsLeft, const string& in, int n, std::string& flo
                     nextPos.push_back(posb[i] + in.substr(n,1));
                 }
             }
-            findPossibilities(floatsLeft, in, n+1, floating, nextPos, final, dict);
+            findPossibilities(blanks, floatsLeft, in, n+1, floating, nextPos, final, dict);
         }
         //Case 2: Space is not green
         else {
             for (int k = 0; k < (int) posb.size(); k++){
-                nextLetter(posb[k], floatsLeft, in, n, floating, posb, final, dict);
+                nextLetter(blanks, posb[k], floatsLeft, in, n, floating, posb, final, dict);
             }
             if (posb.size() == 0){
-                nextLetter("", floatsLeft, in, n, floating, posb, final, dict);
+                nextLetter(blanks, "", floatsLeft, in, n, floating, posb, final, dict);
             }
         }
     }
 }
 
-void nextLetter(string prefix, int floatsLeft, const string& in, int n, std::string& floating, vector<string> posb, std::set<std::string>& final, const std::set<std::string>& dict){
+void nextLetter(int blanks, string prefix, int floatsLeft, const string& in, int n, std::string& floating, vector<string> posb, std::set<std::string>& final, const std::set<std::string>& dict){
     string alph = "abcdefghijklmnopqrstuvwxyz";
     for (int i = 0; i < (int) floating.size(); i++){
         vector<string> nextPos;
         string nextStr = prefix + floating.substr(i,1);
         string newfloating = floating.substr(0,i) + floating.substr(i+1);
         nextPos.push_back(nextStr);
-        findPossibilities(floatsLeft-1,in, n+1, newfloating, nextPos, final, dict);
+        findPossibilities(blanks-1,floatsLeft-1,in, n+1, newfloating, nextPos, final, dict);
     }
-    if (floatsLeft == (int) in.length()){
-        return;
-    }
+    if (floatsLeft < blanks){
     if (floatsLeft < (int) (in.length() - prefix.length()) || floating.length() == 0){
         vector<string> nextPos;
         for (int j = 0; j < 26; j++){
             string nextStr = prefix + alph.substr(j,1);
             nextPos.push_back(nextStr);
         }
-        findPossibilities(floatsLeft, in, n+1, floating, nextPos, final, dict);
+        findPossibilities(blanks-1,floatsLeft, in, n+1, floating, nextPos, final, dict);
+    }
     }
 }
 
