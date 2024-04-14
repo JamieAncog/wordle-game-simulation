@@ -38,10 +38,12 @@ std::set<std::string> wordle(
 
 // Define any helper functions 
 void findPossibilities(int blanks, int floatsLeft, const string& in, int n, std::string& floating, vector<string> posb, std::set<std::string>& final, const std::set<std::string>& dict){
+    /*
     for (int i = 0; i < (int) posb.size(); i++){
         cout << posb[i] << " ";
     }
     cout << endl;
+    */ 
     if (n == (int) in.length()) {
         for (int i = 0; i < (int) posb.size(); i++){
             std::set<std::string>::iterator it;
