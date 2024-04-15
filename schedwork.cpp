@@ -22,7 +22,8 @@ static const Worker_T INVALID_ID = (unsigned int)-1;
 
 // Add prototypes for any helper functions here
 bool checkFinished(const size_t dailyNeed, DailySchedule& sched, const AvailabilityMatrix& avail);
-bool alrSched(int n, Worker_T id, DailySchedule& sched, int day);
+bool isSchedTwice(int n, Worker_T id, DailySchedule& sched, int day, int count);
+void printDay(DailySchedule &sched, int day);
 bool recursiveHelper(
     const AvailabilityMatrix& avail,
     const size_t dailyNeed,
@@ -67,8 +68,14 @@ bool recursiveHelper(
 ){
     //1) If finished state and valid, save solution, return true
     //Check if schedule is full
-    if (checkFinished(dailyNeed, sched, avail)){
-        return true;
+    if (sched.size() == avail.size())
+    {
+        if (checkFinished(dailyNeed, sched, avail)){
+            return true;
+        }
+        else {
+            return false;
+        }
     }
     //2) For each next possible choice
     //For every worker
@@ -78,12 +85,15 @@ bool recursiveHelper(
         vector<Worker_T> dayToFill;
         sched.push_back(dayToFill);
     }
-    else if (sched[day].size() == dailyNeed && sched.size() < avail.size()){
+    else if (sched[day].size() >= dailyNeed){
+        printDay(sched, day);
         cout << "Moved to day " << day+1 << endl;
         vector<Worker_T> dayToFill;
         sched.push_back(dayToFill);
         day++;
     }
+
+    printDay(sched, day);
 
     for (int i = 0; i < (int) avail[0].size(); i++){
         //2A) Apply choice to state
@@ -93,16 +103,26 @@ bool recursiveHelper(
         sched[day].push_back(nurse);
         shiftCount[i]++;
         //2B) If choice is valid, recursive call with current state
-        if (isAvail && shiftCount[i] <= (int) maxShifts && !alrSched(0, nurse, sched, day)){
-            recursiveHelper(avail, dailyNeed, maxShifts, sched, shiftCount, day);
+        if (isAvail && shiftCount[i] <= (int) maxShifts && !isSchedTwice(0, nurse, sched, day, 0)){
+            printDay(sched, day);
+            return recursiveHelper(avail, dailyNeed, maxShifts, sched, shiftCount, day);
+        }
+        if (!isAvail){
+            cout << "Not available" << endl;
+        }
+        if (shiftCount[i] > (int) maxShifts){
+            cout << "Max shifts" << endl;
+        }
+        if (isSchedTwice(0, nurse, sched, day, 0)){
+            cout << "Already scheduled" << endl;
         }
         //2C) Remove choice
-        sched[day].pop_back();
         cout << "Remove Worker " << i << endl;
+        sched[day].pop_back();
         shiftCount[i]--;
     }
     //3) Return false
-    return false;
+    return checkFinished(dailyNeed, sched, avail);
 }
 
 bool checkFinished(const size_t dailyNeed, DailySchedule& sched, const AvailabilityMatrix& avail){
@@ -118,15 +138,28 @@ bool checkFinished(const size_t dailyNeed, DailySchedule& sched, const Availabil
     return stat;
 }
 
-bool alrSched(int n, Worker_T id, DailySchedule& sched, int day){
-    if (n < (int) sched[day].size()){
-        if (sched[day][n] == id){
-            return true;
+bool isSchedTwice(int n, Worker_T id, DailySchedule& sched, int day, int count){
+    count = 0;
+    for (int i = 0; i < (int) sched[day].size(); i++){
+        if (sched[day][i] == id){
+            count++;
         }
-        n++;
-        alrSched(n, id, sched, day);
     }
-    return false;
+    if (count >= 2){
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+void printDay(DailySchedule &sched, int day){
+    cout << endl;
+    cout << "Day " << day << " Schedule: ";
+    for (int i = 0; i < (int) sched[day].size(); i++){
+        cout << sched[day][i] << " ";
+    }
+    cout << endl;
 }
 
 
