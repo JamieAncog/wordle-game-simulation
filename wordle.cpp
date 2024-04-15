@@ -54,7 +54,7 @@ void findPossibilities(int blanks, int floatsLeft, const string& in, int n, std:
         }
     }
     else {
-        //Case 1: Space is green
+        //Case 1: Space is green 
         vector<string> nextPos;
         if (in.substr(n,1).compare("-") != 0){
             if (posb.size() == 0){
