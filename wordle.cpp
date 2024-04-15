@@ -89,14 +89,14 @@ void nextLetter(int blanks, string prefix, int floatsLeft, const string& in, int
         findPossibilities(blanks-1,floatsLeft-1,in, n+1, newfloating, nextPos, final, dict);
     }
     if (floatsLeft < blanks){
-    if (floatsLeft < (int) (in.length() - prefix.length()) || floating.length() == 0){
-        vector<string> nextPos;
-        for (int j = 0; j < 26; j++){
-            string nextStr = prefix + alph.substr(j,1);
-            nextPos.push_back(nextStr);
-        }
-        findPossibilities(blanks-1,floatsLeft, in, n+1, floating, nextPos, final, dict);
-    }
+      if (floatsLeft < (int) (in.length() - prefix.length()) || floating.length() == 0){
+          vector<string> nextPos;
+          for (int j = 0; j < 26; j++){
+              string nextStr = prefix + alph.substr(j,1);
+              nextPos.push_back(nextStr);
+          }
+          findPossibilities(blanks-1,floatsLeft, in, n+1, floating, nextPos, final, dict);
+      }
     }
 }
 
