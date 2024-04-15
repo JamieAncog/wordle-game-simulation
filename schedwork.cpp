@@ -22,16 +22,15 @@ static const Worker_T INVALID_ID = (unsigned int)-1;
 
 // Add prototypes for any helper functions here
 bool checkFinished(const size_t dailyNeed, DailySchedule& sched, const AvailabilityMatrix& avail);
+bool alrSched(int n, Worker_T id, DailySchedule& sched, int day);
 bool recursiveHelper(
     const AvailabilityMatrix& avail,
     const size_t dailyNeed,
     const size_t maxShifts,
     DailySchedule& sched,
-    int*& numShifts,
-    int day,
-    int currFill
+    int*& shiftCount,
+    int day
 );
-bool notMax(int worker, int* numShifts, const size_t maxShifts);
 
 // Add your implementation of schedule() and other helper functions here
 
@@ -48,13 +47,13 @@ bool schedule(
     }
     sched.clear();
     // Add your code below
-    int numDays = (int) avail.size();
-    int* numShifts = new int[numDays];
-    for (int i = 0; i < numDays; i++){
-        numShifts[i] = 0;
+    int numWorkers = (int) avail.size();
+    int* shiftCount = new int[numWorkers];
+    for (int i = 0; i < numWorkers; i++){
+        shiftCount[i] = 0;
     }
-    bool val = recursiveHelper(avail, dailyNeed, maxShifts, sched, numShifts, 0, 0);
-    delete numShifts;
+    bool val = recursiveHelper(avail, dailyNeed, maxShifts, sched, shiftCount, 0);
+    delete [] shiftCount;
     return val;
 }
 
@@ -63,38 +62,44 @@ bool recursiveHelper(
     const size_t dailyNeed,
     const size_t maxShifts,
     DailySchedule& sched,
-    int*& numShifts,
-    int day,
-    int currFill
+    int*& shiftCount,
+    int day
 ){
     //1) If finished state and valid, save solution, return true
     //Check if schedule is full
-
     if (checkFinished(dailyNeed, sched, avail)){
         return true;
     }
     //2) For each next possible choice
     //For every worker
-    vector<Worker_T> dayToFill;
-    sched.push_back(dayToFill);
-    for (int i = 0; i < (int) avail[day].size(); i++){
+
+    if (sched.empty()){
+        cout << "Moved to day 0" << endl;
+        vector<Worker_T> dayToFill;
+        sched.push_back(dayToFill);
+    }
+    else if (sched[day].size() == dailyNeed && sched.size() < avail.size()){
+        cout << "Moved to day " << day+1 << endl;
+        vector<Worker_T> dayToFill;
+        sched.push_back(dayToFill);
+        day++;
+    }
+
+    for (int i = 0; i < (int) avail[0].size(); i++){
         //2A) Apply choice to state
         Worker_T nurse = i;
+        cout << "Try Worker " << i << endl;
         bool isAvail = avail[day][i];
-        numShifts[i]++;
-        dayToFill.push_back(nurse);
+        sched[day].push_back(nurse);
+        shiftCount[i]++;
         //2B) If choice is valid, recursive call with current state
-        if (isAvail && notMax(i, numShifts, maxShifts)){
-            if (currFill == (int) avail[day].size()){
-                recursiveHelper(avail, dailyNeed, maxShifts, sched, numShifts, day+1, 0);
-            }
-            else {
-                recursiveHelper(avail, dailyNeed, maxShifts, sched, numShifts, day, currFill+1);
-            }
+        if (isAvail && shiftCount[i] <= (int) maxShifts && !alrSched(0, nurse, sched, day)){
+            recursiveHelper(avail, dailyNeed, maxShifts, sched, shiftCount, day);
         }
         //2C) Remove choice
-        dayToFill.pop_back();
-        numShifts[i]--;
+        sched[day].pop_back();
+        cout << "Remove Worker " << i << endl;
+        shiftCount[i]--;
     }
     //3) Return false
     return false;
@@ -113,12 +118,15 @@ bool checkFinished(const size_t dailyNeed, DailySchedule& sched, const Availabil
     return stat;
 }
 
-bool notMax(int worker, int* numShifts, const size_t maxShifts){
-    if (numShifts[worker] < (int) maxShifts){
-        return true;
+bool alrSched(int n, Worker_T id, DailySchedule& sched, int day){
+    if (n < (int) sched[day].size()){
+        if (sched[day][n] == id){
+            return true;
+        }
+        n++;
+        alrSched(n, id, sched, day);
     }
-    else {
-        return false;
-    }
+    return false;
 }
+
 
