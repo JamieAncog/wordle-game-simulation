@@ -81,7 +81,7 @@ bool recursiveHelper(
         day++;
     }
 
-    for (int i = 0; i < (int) avail[day].size(); i++){
+    for (int i = (int) avail[day].size() - 1; i >= 0; i--){
         //2A) Apply choice to state
         Worker_T nurse = i;
         bool isAvail = avail[day][i];
@@ -98,7 +98,6 @@ bool recursiveHelper(
         shiftCount[i]--;
     }
     //3) Return false
-    //cout << "NO OPTIONS" << endl;
     if (sched[day].empty()){
         sched.pop_back();
     }
