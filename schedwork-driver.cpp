@@ -17,6 +17,7 @@ void printSchedule(const DailySchedule& sched);
 int main()
 {
     // Replace the matrix below with your test case
+    /*
     AvailabilityMatrix avail = { 
         {1, 1, 1, 1},
         {1, 0, 1, 0},
@@ -24,13 +25,27 @@ int main()
         {1, 0, 0, 1}
     };
     DailySchedule sched;
-    bool solutionFound = schedule(avail, 2, 2, sched);
+    */
+    size_t dailyNeed = 4;
+    size_t maxShifts = 4;
+    DailySchedule sched;
+    AvailabilityMatrix avail = { 
+        {1, 0, 1, 0, 1, 1, 0, 1}, // 2, 4, 5, 7
+        {1, 0, 1, 0, 0, 1, 1, 0}, // 0, 2, 5, 6 
+        {1, 1, 0, 0, 0, 0, 1, 1}, // 0, 1, 6, 7
+        {0, 1, 0, 1, 1, 0, 1, 0}, // 1, 3, 4, 6
+        {0, 1, 1, 0, 1, 0, 0, 1}, // 1, 2, 4, 7
+        {1, 1, 0, 1, 1, 1, 0, 1}, // 0, 2, 3, 5
+        {1, 1, 0, 1, 1, 0, 0, 1}  // 0, 3, 4, 7
+    };
+    bool solutionFound = schedule(avail,dailyNeed,maxShifts,sched);
     if(solutionFound)
     {
         printSchedule(sched);
     }
     else
     {
+        printSchedule(sched);
         cout << "No solution found!" << endl;
     }
     return 0;
