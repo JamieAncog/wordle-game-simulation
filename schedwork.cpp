@@ -85,7 +85,7 @@ bool recursiveHelper(
         Worker_T nurse = i;
         bool isAvail = avail[day][i];
         sched[day].push_back(nurse);
-        shiftCount[i]++;
+        shiftCount[i]++; 
         //2B) If choice is valid, recursive call with current state
         if (isAvail && shiftCount[i] <= (int) maxShifts && !isSchedTwice(0, nurse, sched, day, 0)){
             if (recursiveHelper(avail, dailyNeed, maxShifts, sched, shiftCount, day)){
