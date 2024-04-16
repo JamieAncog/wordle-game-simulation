@@ -137,7 +137,7 @@ bool isSchedTwice(int n, Worker_T id, DailySchedule& sched, int day, int count){
     else {
         return false;
     }
-}
+} 
 
 /*
 void printDay(DailySchedule &sched, int day){
