@@ -70,12 +70,7 @@ bool recursiveHelper(
     //Check if schedule is full
     if (sched.size() == avail.size() && sched[day].size() == dailyNeed)
     {
-        if (checkFinished(dailyNeed, sched, avail)){
-            return true;
-        }
-        else {
-            return false;
-        }
+        return true;
     }
     //2) For each next possible choice
     //For every worker
@@ -86,17 +81,15 @@ bool recursiveHelper(
         day++;
     }
 
-    for (int i = 0; i < (int) avail[0].size(); i++){
+    for (int i = 0; i < (int) avail[day].size(); i++){
         //2A) Apply choice to state
         Worker_T nurse = i;
-        //cout << "Try Worker " << i << endl;
         bool isAvail = avail[day][i];
         sched[day].push_back(nurse);
         shiftCount[i]++;
         //2B) If choice is valid, recursive call with current state
         if (isAvail && shiftCount[i] <= (int) maxShifts && !isSchedTwice(0, nurse, sched, day, 0)){
             if (recursiveHelper(avail, dailyNeed, maxShifts, sched, shiftCount, day)){
-                //cout << "TRUE" << endl;
                 return true;
             }
         }
@@ -140,14 +133,4 @@ bool isSchedTwice(int n, Worker_T id, DailySchedule& sched, int day, int count){
     }
 } 
 
-/*
-void printDay(DailySchedule &sched, int day){
-    cout << endl;
-    cout << "Day " << day << " Schedule: ";
-    for (int i = 0; i < (int) sched[day].size(); i++){
-        cout << sched[day][i] << " ";
-    }
-    cout << endl;
-}
-*/
 
