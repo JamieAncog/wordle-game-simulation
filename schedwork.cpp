@@ -122,7 +122,7 @@ bool recursiveHelper(
         shiftCount[i]--;
     }
     //3) Return false
-    return checkFinished(dailyNeed, sched, avail);
+    return false;
 }
 
 bool checkFinished(const size_t dailyNeed, DailySchedule& sched, const AvailabilityMatrix& avail){
