@@ -52,7 +52,8 @@ bool schedule(
     for (int i = 0; i < numWorkers; i++){
         shiftCount[i] = 0;
     }
-    bool val = recursiveHelper(avail, dailyNeed, maxShifts, sched, shiftCount, -1);
+    bool val;
+    val = recursiveHelper(avail, dailyNeed, maxShifts, sched, shiftCount, -1);
     delete [] shiftCount;
     return val;
 }
