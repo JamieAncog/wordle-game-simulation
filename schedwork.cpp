@@ -21,7 +21,6 @@ static const Worker_T INVALID_ID = (unsigned int)-1;
 
 
 // Add prototypes for any helper functions here
-bool checkFinished(const size_t dailyNeed, DailySchedule& sched, const AvailabilityMatrix& avail);
 bool isSchedTwice(int n, Worker_T id, DailySchedule& sched, int day, int count);
 bool recursiveHelper(
     const AvailabilityMatrix& avail,
@@ -47,7 +46,7 @@ bool schedule(
     }
     sched.clear();
     // Add your code below
-    int numWorkers = (int) avail.size();
+    int numWorkers = (int) avail[0].size();
     int* shiftCount = new int[numWorkers];
     for (int i = 0; i < numWorkers; i++){
         shiftCount[i] = 0;
@@ -81,7 +80,7 @@ bool recursiveHelper(
         day++;
     }
 
-    for (int i = (int) avail[day].size() - 1; i >= 0; i--){
+    for (int i = 0; i < (int) avail[day].size(); i++){
         //2A) Apply choice to state
         Worker_T nurse = i;
         bool isAvail = avail[day][i];
@@ -102,19 +101,6 @@ bool recursiveHelper(
         sched.pop_back();
     }
     return false;
-}
-
-bool checkFinished(const size_t dailyNeed, DailySchedule& sched, const AvailabilityMatrix& avail){
-    bool stat = true;
-    if (sched.size() < avail.size()){
-        stat = false;
-    }
-    for (int i = 0; i < (int)sched.size(); i++){
-        if (sched[i].size() != dailyNeed){
-            stat = false;
-        }
-    }
-    return stat;
 }
 
 bool isSchedTwice(int n, Worker_T id, DailySchedule& sched, int day, int count){
